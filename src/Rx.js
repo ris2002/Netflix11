@@ -3,26 +3,28 @@
 import React, { useEffect, useState } from "react";
 import axios from "./axios"
 import "./Rx.css";
-import {useNavigate} from "react-router"
-import { getmoviedata } from "./Movie";
-import Movie from './Movie'
- 
-
+import { useHistory } from "react-router-dom";
 function Rx({title,fetchURL,isLargeRow=false}){
+  
 // eslint-disable-next-line no-unused-vars
 const[movies,setMovies]=useState([]);
-const[movieID,setMovieID]= useState([""])
+
 
 const baurl="https://image.tmdb.org/t/p/original/";
- 
- //const movieClick=(id)=>{getmoviedata(id)
-    //window.open("/movie", "_self")}
- 
-
+const history = useHistory();
+const getmoviedata = (id,media_type) => {
+    history.push({
+      pathname: "/movie",
+      state: [id,media_type]
+      
+    });
+  };
 useEffect(() =>{
 // eslint-disable-next-line no-unused-vars
 async function FD(){
+    console.log('fetchURL',fetchURL)
     const request =await axios.get(fetchURL);
+    console.log('fetchURL2',await axios.get(fetchURL))
     setMovies(request.data.results);
     return request;
 
@@ -31,32 +33,27 @@ async function FD(){
 FD();
 },[fetchURL]);
 //console.log(movies);
-const getmoviedata=(id)=>{
-    //setMovieID(id)
-   
-    
-    
-}
+
     return(
         <div className="row">
 
 <h2>{title}</h2>
 <div className="posters">
 
-{movies.map(movie =>(
+{movies.map(mov =>(
     
     <img className={`poster ${isLargeRow && "posterLarge"}`}  
-    key={movie.id}
-   
-   onClick={()=>getmoviedata(movie.id)}
+    key={mov.id}
+
+    onClick={() => getmoviedata(mov.id,mov.media_type)}
      src={`${baurl}${
 
-        isLargeRow ? movie.poster_path: movie.backdrop_path
-    }`}  alt={movie.name} test1={movie.id} />
+        isLargeRow ? mov.poster_path: mov.backdrop_path
+    }`}  alt={mov.name} test1={mov.id} />
 )
 )}
 <>
-{/* <Movie movieID={movieID}/> */}
+
 </>
 </div>
 
